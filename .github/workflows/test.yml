@@ -1,0 +1,28 @@
+name: Use Zowe CLI
+on: [push]
+
+jobs:
+  zowe:
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    
+    steps:
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+      
+    - name: Install Zowe CLI V1-LTS
+      id: install-cli
+      run: npm install -g @zowe/cli@zowe-v1-lts
+      
+    - name: Unlock Keyring for SCS
+      if: ${{ always() && steps.install-cli.outcome == 'success' && matrix.os == 'ubuntu-latest' }}
+      uses: tjohnsonBCM/unlock-keyring@master
+      
+    - name: Run Command
+      run: zowe --help
