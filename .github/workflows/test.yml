@@ -23,6 +23,9 @@ jobs:
     - name: Unlock Keyring for SCS
       if: ${{ always() && steps.install-cli.outcome == 'success' && matrix.os == 'ubuntu-latest' }}
       uses: tjohnsonBCM/unlock-keyring@master
+    
+    - name: Install SCS Plugin
+      run: zowe plugins install @zowe/secure-credential-store-for-zowe-cli@zowe-v1-lts
       
     - name: Run Command
       run: zowe --help
